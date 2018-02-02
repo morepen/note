@@ -1,0 +1,273 @@
+1.ep.once是可以渗透式往后执行的 ep.once('check_report_state',function(){}）
+
+2.状态不为初始值，提示已经处理过 if(result[0].state!=0){return Me.callbackFunction({message:'该上报任务已经处理过'},null)};
+
+3.当前时间只要前十位的写法 var createtime=new Date().getTime().toString().substr(0,10);
+
+4.只能输入长度为2-4位是中文的正则 var re1 = /^([\u4e00-\u9fa5]){2,4}$/;
+
+5.如果key不符合，优先返回错误if(key==_key){}else{return Me.callbackFunction({message:'用户信息错误'},null);}
+
+6.同意和不同意的处理方法if(verifyState==1){//同意 }else if(verifyState==2){//不同意}else{return Me.callbackFunction({message:'verifyState参数错误'},null);}
+
+7.查询不到数据优先返回数据 if(err) return Me.callbackFunction({message:'数据异常'},null); return Me.callbackFunction(null,true);
+
+8.用cbMsg.message定义返回的信息 cbMsg.message='权限错误';return Me.callbackFunction(cbMsg,null);
+
+9.邮箱未维护的写法 if(hpzyObj.email==""||!hpzyObj.email) return Me.callbackFunction({message:"该获票专员未维护邮箱"},null);
+
+10.为空判断的写法  if(hpzyObj.jobNo==undefined||hpzyObj.jobNo=='undefined'||hpzyObj.jobNo==null||hpzyObj.jobNo=='null'){hpzyObj.jobNo='';}
+
+11.回调的写法，用第一个参数去判断gisRules.sendEmail(result_email,AuthorityText,result_url,function(err1,result1){var sendR="";if(err1){sendR="FAIL";}else{sendR="SUCCESS";}} 
+return cb('该邮箱未发送失败',null);err1如果有用字符窜去表明，如果没有用null来表示else
+
+12.跨域的前台写法
+    $.ajax({  
+            async: false,
+            url:email_host+"/api/EmailSystem/AuthorityInfo",  
+            type: "POST",
+	        dataType: 'jsonp',
+	        data:{id:id}, 
+	        jsonpCallback: "callbackgetdealercodejsonp",
+	        timeout: 5000,
+	        contentType: "application/json;utf-8",
+	        success: function (result) {
+	            //alert(JSON.stringify(result));
+	            $("#reporter1").html(result.reporter1);
+	            $("#reporter").html(result.reporter);
+	            $("#caseNo").html(result.caseNo);
+	            $("#expect_amount").html(result.expect_amount);
+	            $("#vehicleBrand").html(result.vehicleBrand);
+	            $("#authority_remarks").html(result.authority_remarks);	            
+	        }
+	        error: function (jqXHR, textStatus, errorThrown) {
+	            //alert(textStatus);
+	        } 
+        });
+13.跨域的后台写法
+  AuthorityInfo:function(){			
+			var Me = this;
+			var TaskId = Me.GetParams('id');
+		    var sql_AuthorityInfo = "select id,reporter,reporter1,caseNo,vehicleBrand,authority_remarks,authority_reply from tasks_ds as a where a.id=?";
+			db.query(sql_AuthorityInfo, [TaskId], function(err, result) {
+				if(err) {
+					return Me.callbackFunction('系统异常', null);
+				}
+				if(result.length > 0) {
+					var xw_info=result[0];
+					var cbData={
+                        id:xw_info.id,
+                        reporter:xw_info.reporter,
+                        reporter1:xw_info.reporter1,
+                        caseNo:xw_info.caseNo,
+                        expect_amount:xw_info.expect_amount,
+                        vehicleBrand:xw_info.vehicleBrand,
+                        authority_remarks:xw_info.authority_remarks,
+                        authority_reply:xw_info.authority_reply
+                    }
+                    // tokenObj[username]=d;
+                    //return Me.callbackFunction(null,cbData);
+                    //var resddd = JSON.stringify(cbData);
+                    //Me.res.send(resddd);
+					  Me.res.send(Me.req.query.callback + "(" + JSON.stringify(cbData) + ")");
+					
+		      } else {
+			return Me.callbackFunction('该任务不存在', null);
+		      }
+		   })
+		}
+14.全部省份的声明 var provinceArr = ['京','津','沪','冀','豫','云','辽','黑','湘','皖','鲁','新','苏','浙','赣','鄂','桂','甘','晋','蒙','陕','吉','闽','贵','粤','川','青','藏','琼','宁','渝'];
+
+15.全局数组的声明
+   var rec={
+    fromUser:'AuthServer',
+    toUser:'lg',
+    text:'123',
+    module:module,
+    socketid:1,
+    roletype:1,//1 查勘员 2定损员 3 查勘定损员
+    eventype:1//1 待查勘 2已查勘 3待定损 4定损中 5已定损 6 获票
+};
+16.隐藏微信控件的写法
+    document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+        WeixinJSBridge.call('hideOptionMenu');//隐藏微信中网页右上角按钮
+        WeixinJSBridge.call('hideToolbar');//隐藏微信中网页底部导航栏
+    });
+17.延时跳转
+    setTimeout('window.location="OrderList.html"',2000);
+
+18二维数组的创建
+      var images = {
+        localId: [],
+        serverId: []
+       };
+  var length = images.localId.length；
+  images.serverId.push(res.serverId);
+
+19.时间戳转化的例子
+  function format(time,format) {
+
+       var date = {
+              "M+": time.getMonth() + 1,
+              "d+": time.getDate(),
+              "h+": time.getHours(),
+              "m+": time.getMinutes(),
+              "s+": time.getSeconds(),
+              "q+": Math.floor((time.getMonth() + 3) / 3),
+              "S+": time.getMilliseconds()
+       };
+       if (/(y+)/i.test(format)) {
+              format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+       }
+       for (var k in date) {
+              if (new RegExp("(" + k + ")").test(format)) {
+                     format = format.replace(RegExp.$1, RegExp.$1.length == 1
+                            ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+              }
+       }
+       return format;
+   }
+  console.log(format(‘1513749488'，‘yyyy-MM-dd h:m:s'));
+20.var bindStatus = data[i].seqstatus == 0 ? '待处理':'已处理';
+
+21.for (var i=0;i<cars.length;i++)
+
+22.$(document).on('click', '.notice_yes', function(){}）
+
+23.delete from task where owner="张三"
+
+24.延时处理跳转
+   setTimeout(function(){
+                        		goProgress(user.oi,Policyno);
+                        	},1000);
+                        	//setTimeout('window.location="InsuranceProgress.html?openid="+user.oi+"&Policyno="+Policyno+""',1000);
+                        	}
+   function goProgress(openid,Policyno){
+    	window.location="InsuranceProgress.html?openid="+openid+"&Policyno="+Policyno
+    }
+25.UPDATE tasks_ds SET id = 10 WHERE accept_time = '1515454230' 
+
+26.SELECT accept_time FROM tasks_ds  WHERE id = 10 
+
+27.final DetailDCK detailDCK= (DetailDCK) detailClass;
+
+28.select * FROM users where areaid=(select AreaID from area where Area2Code = (select Area2Code from area where AreaID=?) " +
+                    "AND Area3Code='') AND userstate=1 AND (backrole=4 or backrole=11);
+29.Toast.makeText(ctx,"催办人伤:"+UrgeResponseData.realname+UrgeResponseData.mobile,Toast.LENGTH_SHORT).show();
+
+30.$("#authority_reply").attr("readonly","readonly");$("#authority_reply").attr("disabled","disabled");
+
+31.返回无结果的接口处理
+request.post({ url: url, form: _params, timeout: settings.timeout }, function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    console.log('body:', body);
+                    try {
+                        var _body = JSON.parse(body);
+                    }
+                    catch (_err) {
+                        console.log('_err:', _err);
+                        _body = {};
+                    }
+                    if (_body.code == 200) {
+                        return Me.cb(null, body);
+                    }
+                    else {
+                        return Me.cb('系统异常', null);
+                    }
+                }
+                else if (error.code == 'ESOCKETTIMEDOUT') {
+                    Me.cb(error, body);
+                }
+                else {
+                    Me.cb(error, body);
+                }
+            })
+32.为空判断条件
+   if(variable1 !== null|| variable1 !== undefined|| variable1 !== '') {
+     let variable2 = variable1;
+   }
+33.更新语句的写法
+   var sql = 'update cards set openid=?,userName=?,idCard=?,phone=?,frameNumber=?,brandNumber=?,address=?,status=1,activeDate=? where cardNumber=?';
+
+34.安卓条件的判断 selectDCK.getAsString(TaskCK.hurt_state).equals("1")
+
+35.安卓居右对齐 android:layout_alignParentRight="true"
+
+36.mData.get(position).getAsString(TaskCK.licenseno)
+
+37. 跳转到拨号页面
+Intent dialIntent =  new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumber));//跳转到拨
+        ctx.startActivity(dialIntent);
+
+38.ajax请求基本例子
+   $.ajax({
+	    type:"POST",  
+	    url:handle_url,   
+	    dataType:"json", 
+	    timeout:5000, 
+	    data:{
+		id: id,
+		key:key,
+									
+	     },
+            success:function(result) {
+			
+				},
+	    error:function(err){  
+			       　 
+			       },
+	    complete : function(XMLHttpRequest,status){ //请求完成后最终执行参数
+		 if(status=='timeout'){//超时,status还有success,error等值的情况
+		     ajaxTimeoutTest.abort();
+		     hcAlert("超时");
+		    }
+		　}
+	    }) 
+39.接口发跨服务请求
+   // 查询月度保费赔款信息
+   function queryGarageMonthInfo() {
+    var url = settings.ApiUrl + 'queryGarageMonthInfo';
+    var _params = {
+        query_date: hcUti.formatDate(new Date(), 'yyyy/MM/dd'),
+        timestamp: new Date().getTime() + ''
+    };
+    console.log('url:', url);
+    console.log('_params:', _params);
+    request.post({ url: url, form: _params, timeout: settings.timeout }, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            body = JSON.parse(body);
+            body = body.data;
+            console.log('body:', body.data.length);
+            updateGarageMonthInfo(body.data);
+        }
+        // else if (error.code == 'ESOCKETTIMEDOUT') {
+        //     console.log('error:', error);
+        // }
+        else {
+            console.log('error:', error);
+            queryGarageMonthInfo();
+        }
+    });
+}
+40.ext只有文本的例子  xtype:'tbtext'
+
+
+41. 安卓的输出语句必须是字符串System.out.println(read); 
+
+42.ext树节点
+   function makeSelected(n){
+    var ss = Ext.getCmp('westPanelId').down('#policyTreePanel')
+   
+    var TreeArr=ss.getRootNode().childNodes;
+    for (var k = 0, length = TreeArr.length; k < length; k++) {
+        var treename= TreeArr[k].raw.name 
+
+;
+        if(treename==n){
+            alert(TreeArr[k].raw.text);
+            ss.getSelectionModel().select(ss.getRootNode().childNodes[k])
+        }
+    }
+  
+}
+ makeSelected("14")
