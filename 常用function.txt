@@ -1,0 +1,65 @@
+1.递归向数据库插入1000数据
+   funcData: function(){
+            var Me;
+            Me = this;
+            Me.funcData2(1,function(err,result){
+                console.log(err, result);
+                Me.callbackFunction(err,result);
+            });
+        },
+    funcData2: function(n, cb){
+            var Me = this;
+            var sqlCmd = 'insert into garages (garage_name,garage_user,garage_code,garage_area,garage_address,garage_type,garage_contact,garage_mobile,garage_status,whether_claims) values (?,?,?,?,?,?,?,?,?,?)';
+            var garage_name = '测试修理厂-编号' + n;
+            var garage_user = 7;
+            var garage_code = 'QWERTYUIOP-' + n;
+            var garage_area = 'A002';
+            var garage_address = '武汉市青山区';
+            var garage_type = 1;
+            var garage_contact = '联系人-编号' + n;
+            var garage_mobile = '13333333333';
+            var garage_status = 1;
+            var whether_claims = 0;
+            var sqlParams = [garage_name, garage_user, garage_code, garage_area, garage_address, garage_type, garage_contact, garage_mobile, garage_status, whether_claims];
+            Me.sqlConn.query(sqlCmd, sqlParams, function (_err, _results) {
+                n++;
+                if(n>1000){
+                    return cb(null,'over');
+                }
+                Me.funcData2(n,cb);
+            });
+        }
+ 2.request发生错误的处理方法
+    request.post({ url: url, form: _params, timeout: settings.timeout }, function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    console.log('body:', body);
+                    try {
+                        var _body = JSON.parse(body);
+                    }
+                    catch (_err) {
+                        console.log('_err:', _err);
+                        _body = {};
+                    }
+                    if (_body.code == 200) {
+                        return Me.cb(null, body);
+                    }
+                    else {
+                        return Me.cb('系统异常', null);
+                    }
+                }
+                else if (error.code == 'ESOCKETTIMEDOUT') {
+                    Me.cb(error, body);
+                }
+                else {
+                    Me.cb(error, body);
+                }
+            })
+ 3.20180205的时间格式函数
+   var day3= new Date();
+   day3.setTime(day3.getTime()-24*60*60*1000);
+   var s1 = day3.getFullYear()+""+ (day3.getMonth()+1)+""+day3.getDate();
+ 4.取自定义随机数的方法
+   average: function (min, max){
+            return Math.round(Math.random() * (max - min) + min);
+        }
+ 5.
