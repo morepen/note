@@ -1,0 +1,18 @@
+1. process_title.setText("已查勘");
+   text_yck.setTextColor(mContext.getResources().getColor(R.color.orangered));
+   img_yck.setImageResource(R.drawable.yck_active);//selectimg
+2.public interface MyInterface1 用来一个类实现多个接口
+
+3.model中public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+4.Presenter中同时持有 Viwe层以及Model层的Interface的引用
+
+5.hurt_state_icon.setImageDrawable(ContextCompat.getDrawable(mView.getContext(),R.drawable.red_medical));
+
+6.isRead.equals("0"） 判断条件如果为真的写法
