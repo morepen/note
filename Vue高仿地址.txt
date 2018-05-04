@@ -1,0 +1,9 @@
+1.http://118.89.140.116:8080/ 图片分享
+
+2.https://github.com/Chanran/vueSocketChatroom 微信群聊
+
+3.https://github.com/hzzly/xyy-vue 趣约地址
+
+4.https://github.com/leonsux/foot  足迹
+
+5.https://github.com/lijiapeng0302/management-system 后台管理系统
